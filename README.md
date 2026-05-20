@@ -9,8 +9,8 @@ This document describes the CI/CD pipeline setup for the Flutter project using G
 Location: `.github/workflows/ci.yml`
 
 The CI pipeline is triggered on:
-- Push to `main`, `develop`, or `master` branches
-- Pull requests to `main`, `develop`, or `master` branches
+- Push to `main`, `develop`, or `staging` branches
+- Pull requests to `main`, `develop`, or `staging` branches
 
 ### Pipeline Steps
 
