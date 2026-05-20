@@ -20,7 +20,7 @@ Clones the repository using GitHub's checkout action.
 #### 2. **Setup Flutter**
 Installs Flutter SDK (version 3.19.0) from the stable channel.
 
-#### 3. **Flutter pub get**
+#### 3. **Flutter pub get** 
 Downloads and installs all project dependencies.
 ```bash
 flutter pub get
