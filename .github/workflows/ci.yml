@@ -11,54 +11,36 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # Step 1: Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'
+          flutter-version: '3.44.0'
           channel: 'stable'
 
-      # Step 3: Flutter pub get
       - name: Flutter pub get
         run: flutter pub get
 
-      # Step 4: Dart format check
       - name: Check dart formatting
         run: dart format --set-exit-if-changed lib test
 
-      # Step 5: Flutter analyze
       - name: Run flutter analyze
         run: flutter analyze
 
-      # Step 6: Build runner generation (optional - uncomment if using build_runner)
-      # Uncomment the following if your project uses build_runner for code generation
       # - name: Build runner generation
       #   run: flutter pub run build_runner build --delete-conflicting-outputs
 
-      # Step 7: Flutter test
       - name: Run flutter tests
         run: flutter test --coverage
 
-      # Step 8: Android build verification
       - name: Build Android APK
         run: flutter build apk --release
 
-      # Step 9: (Optional) iOS build verification
       - name: Build iOS
         run: flutter build ios --release --no-codesign
 
-      # Step 10: Upload coverage report (optional)
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./coverage/lcov.info
-          fail_ci_if_error: false
-
-    # Notifications on failure
       - name: Notify on failure
         if: failure()
         run: echo "CI Pipeline failed! Please check the logs."

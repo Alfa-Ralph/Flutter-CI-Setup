@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_ci_setup/main.dart';
+import 'package:flutter_ci_setup/presentation/home/home_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -18,7 +19,7 @@ void main() {
 
     testWidgets('MyHomePage renders with title', (WidgetTester tester) async {
       await tester.pumpWidget(const MyApp());
-      expect(find.byType(MyHomePage), findsOneWidget);
+      expect(find.byType(HomePage), findsOneWidget);
       expect(find.byType(AppBar), findsOneWidget);
       expect(find.text('Flutter Demo Home Page'), findsOneWidget);
     });
