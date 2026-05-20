@@ -7,7 +7,7 @@ on:
     branches: [main, develop, staging]
 
 jobs:
-  ci:
+  flutter_ci:
     runs-on: ubuntu-latest
     
     steps:
