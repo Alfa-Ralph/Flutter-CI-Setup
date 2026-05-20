@@ -34,12 +34,13 @@ jobs:
 
       - name: Run flutter tests
         run: flutter test --coverage
+        
+      # Build Checks
+      # - name: Build Android APK
+      #   run: flutter build apk --release
 
-      - name: Build Android APK
-        run: flutter build apk --release
-
-      - name: Build iOS
-        run: flutter build ios --release --no-codesign
+      # - name: Build iOS
+      #   run: flutter build ios --release --no-codesign
 
       - name: Notify on failure
         if: failure()

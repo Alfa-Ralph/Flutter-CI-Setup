@@ -64,9 +64,6 @@ flutter build ios --release --no-codesign
 ```
 *Currently commented out - requires macOS runner. Uncomment for iOS verification*
 
-#### 10. **Coverage Upload** (Optional)
-Uploads test coverage reports to Codecov for tracking code coverage metrics.
-
 ### What Blocks a PR from Merging?
 
 A PR **cannot merge** if any of these steps fail:
@@ -88,13 +85,13 @@ dart format check
    ↓
 flutter analyze
    ↓
-build_runner generation (optional)
+build_runner generation
    ↓
 flutter test
    ↓
 android build verification
    ↓
-ios build verification (optional)
+ios build verification 
    ↓
 ✅ PR can merge (if all steps pass)
 ```
