@@ -1,0 +1,28 @@
+name: AlfaKinetic CI
+concurrency:
+  group: alfakinetic-${{ github.ref }}
+  cancel-in-progress: true
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "apps/alfakinetic/**"
+      - "packages/**"
+
+  push:
+    branches: [main, develop]
+    paths:
+      - "apps/alfakinetic/**"
+      - "packages/**"
+
+jobs:
+
+  alfakinetic_ci:
+    uses: ./.github/workflows/_flutter_ci.yml
+    
+    with:
+      app_name: alfakinetic
+
+    secrets:
+      dev_config: ${{ secrets.ALFAKINETIC_DEV_CONFIG_BASE64 }}
+      prod_config: ${{ secrets.ALFAKINETIC_PROD_CONFIG_BASE64 }}
