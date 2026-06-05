@@ -1,0 +1,27 @@
+name: Kyrios CI
+concurrency:
+  group: kyrios-${{ github.ref }}
+  cancel-in-progress: true
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "apps/kyrios/**"
+      - "packages/**"
+
+  push:
+    branches: [main, develop]
+    paths:
+      - "apps/kyrios/**"
+      - "packages/**"
+
+jobs:
+  kyrios_ci:
+    uses: ./.github/workflows/_flutter_ci.yml
+
+    with:
+      app_name: kyrios
+
+    secrets:
+      dev_config: ${{ secrets.KYRIOS_DEV_CONFIG_BASE64 }}
+      prod_config: ${{ secrets.KYRIOS_PROD_CONFIG_BASE64 }}

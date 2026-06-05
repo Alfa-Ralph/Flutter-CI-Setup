@@ -1,0 +1,134 @@
+name: Flutter Mobile Apps CI
+
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+
+      flutter_version:
+        required: false
+        type: string
+        default: "3.38.5"
+
+    secrets:
+      dev_config:
+        required: true
+
+      prod_config:
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flutter_mobile_apps_ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+
+      - name: Determine environment
+        id: env
+        shell: bash
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "config=prod" >> $GITHUB_OUTPUT
+            echo "secret=${{ secrets.prod_config }}" >> $GITHUB_OUTPUT
+
+
+          else
+            echo "config=dev" >> $GITHUB_OUTPUT
+            echo "secret=${{ secrets.dev_config }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Config File
+        run: |
+          mkdir -p apps/${{ inputs.app_name }}/.configs
+
+          echo "${{ steps.env.outputs.secret }}" \
+            | base64 --decode \
+            > apps/${{ inputs.app_name }}/.configs/${{ steps.env.outputs.config }}.json
+
+
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Setup FVM
+        run: |
+          dart pub global activate fvm
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+      - name: Install Flutter
+        run: |
+          fvm install ${{ inputs.flutter_version }}
+          fvm use ${{ inputs.flutter_version }}
+
+      - name: Install Melos
+        run: dart pub global activate melos
+
+      - name: Bootstrap Monorepo
+        run: melos bootstrap
+
+
+      - name: Pub Get App
+        working-directory: apps/${{ inputs.app_name }}
+        run: fvm flutter pub get
+
+
+      - name: Code Generation
+        run: |
+            melos exec \
+            --scope=${{ inputs.app_name }} \
+            --fail-fast \
+            -- \
+            fvm dart run build_runner build --delete-conflicting-outputs
+
+
+      - name: Analyze
+        run: |
+          melos exec \
+            --scope=${{ inputs.app_name }} \
+            -- \
+            fvm flutter analyze
+
+
+      - name: Format Check
+        run: |
+          melos exec \
+            --scope=${{ inputs.app_name }} \
+            -- \
+            dart format .
+
+
+      - name: Generate Coverage
+        working-directory: apps/${{ inputs.app_name }}
+        run: fvm dart run full_coverage
+
+
+      - name: Run Tests
+        working-directory: apps/${{ inputs.app_name }}
+        run: fvm flutter test --coverage
+
+      # - name: Android Build
+      #   working-directory: apps/${{ inputs.app_name }}
+      #   run: |
+      #     fvm flutter build apk \
+      #       --release \
+      #       --dart-define-from-file=.configs/${{ steps.env.outputs.config }}.json
+
+
+      - name: Success
+        if: success()
+        run: echo "CI Passed"
+
+      - name: Failure
+        if: failure()
+        run: echo "CI Failed"

@@ -1,0 +1,20 @@
+name: mobile_monorepo
+
+packages:
+  - apps/**
+  - packages/**
+
+scripts:
+  build_runner:
+    exec: >
+      dart run build_runner build
+      --delete-conflicting-outputs
+
+  analyze:
+    exec: flutter analyze
+
+  format:
+    exec: dart format --set-exit-if-changed .
+
+  test:
+    exec: flutter test
