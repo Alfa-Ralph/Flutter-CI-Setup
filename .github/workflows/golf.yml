@@ -1,0 +1,27 @@
+name: Golf CI
+concurrency:
+  group: golf-${{ github.ref }}
+  cancel-in-progress: true
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "apps/golf/**"
+      - "packages/**"
+
+  push:
+    branches: [main, develop]
+    paths:
+      - "apps/golf/**"
+      - "packages/**"
+
+jobs:
+  golf_ci:
+    uses: ./.github/workflows/_flutter_ci.yml
+
+    with:
+      app_name: golf
+
+    secrets:
+      dev_config: ${{ secrets.GOLF_DEV_CONFIG_BASE64 }}
+      prod_config: ${{ secrets.GOLF_PROD_CONFIG_BASE64 }}
